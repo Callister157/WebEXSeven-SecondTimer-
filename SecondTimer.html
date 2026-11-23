@@ -3,44 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second Stopwatch</title>
+    <title>Second & Millisecond Stopwatch</title>
 </head>
 <body>
 
-    <h1 id="tampilanDetik">0</h1>
+    <h1 id="tampilanWaktu">0.00</h1>
 
     <button id="btnStart">Start</button>
     <button id="btnStop">Stop</button>
     <button id="btnReset">Reset</button>
 
     <script>
-        let detik = 0;
+        let waktuMulai = 0;
+        let waktuTersimpan = 0;
         let intervalId = null;
 
-        const tampilanDetik = document.getElementById("tampilanDetik");
+        const tampilanWaktu = document.getElementById("tampilanWaktu");
         const btnStart = document.getElementById("btnStart");
         const btnStop = document.getElementById("btnStop");
         const btnReset = document.getElementById("btnReset");
 
+        function perbaruiTampilan() {
+            const totalMilidetik = Date.now() - waktuMulai + waktuTersimpan;
+            const detik = Math.floor(totalMilidetik / 1000);
+            // Mengambil 2 digit centisecond (00-99) agar tampilan stabil
+            const milidetik = Math.floor((totalMilidetik % 1000) / 10);
+
+            const formatMilidetik = String(milidetik).padStart(2, "0");
+            tampilanWaktu.textContent = `${detik}.${formatMilidetik}`;
+        }
+
         function startStopwatch() {
-            // Mencegah pembuatan interval ganda jika tombol Start diklik berkali-kali
             if (intervalId !== null) return;
 
-            intervalId = setInterval(function() {
-                detik++;
-                tampilanDetik.textContent = detik;
-            }, 1000); // 1000 ms = 1 detik
+            waktuMulai = Date.now();
+            // Pembaruan setiap 10 ms agar milidetik berjalan mulus
+            intervalId = setInterval(perbaruiTampilan, 10);
         }
 
         function stopStopwatch() {
+            if (intervalId === null) return;
+
             clearInterval(intervalId);
             intervalId = null;
+            waktuTersimpan += Date.now() - waktuMulai;
         }
 
         function resetStopwatch() {
-            stopStopwatch();
-            detik = 0;
-            tampilanDetik.textContent = detik;
+            clearInterval(intervalId);
+            intervalId = null;
+            waktuMulai = 0;
+            waktuTersimpan = 0;
+            tampilanWaktu.textContent = "0.00";
         }
 
         btnStart.addEventListener("click", startStopwatch);
@@ -49,4 +63,4 @@
     </script>
 
 </body>
-</html>     
+</html>
