@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Second Stopwatch</title>
+</head>
+<body>
+
+    <h1 id="tampilanDetik">0</h1>
+
+    <button id="btnStart">Start</button>
+    <button id="btnStop">Stop</button>
+    <button id="btnReset">Reset</button>
+
+    <script>
+        let detik = 0;
+        let intervalId = null;
+
+        const tampilanDetik = document.getElementById("tampilanDetik");
+        const btnStart = document.getElementById("btnStart");
+        const btnStop = document.getElementById("btnStop");
+        const btnReset = document.getElementById("btnReset");
+
+        function startStopwatch() {
+            // Mencegah pembuatan interval ganda jika tombol Start diklik berkali-kali
+            if (intervalId !== null) return;
+
+            intervalId = setInterval(function() {
+                detik++;
+                tampilanDetik.textContent = detik;
+            }, 1000); // 1000 ms = 1 detik
+        }
+
+        function stopStopwatch() {
+            clearInterval(intervalId);
+            intervalId = null;
+        }
+
+        function resetStopwatch() {
+            stopStopwatch();
+            detik = 0;
+            tampilanDetik.textContent = detik;
+        }
+
+        btnStart.addEventListener("click", startStopwatch);
+        btnStop.addEventListener("click", stopStopwatch);
+        btnReset.addEventListener("click", resetStopwatch);
+    </script>
+
+</body>
+</html>     
